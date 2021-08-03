@@ -1,3 +1,6 @@
+## script para invocar al servicio mutant corriendo en localhost
+
+
 if [ -n "$1" ]
 then
 	payload=$1
