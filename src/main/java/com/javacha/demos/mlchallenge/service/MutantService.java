@@ -1,26 +1,17 @@
 package com.javacha.demos.mlchallenge.service;
 
-import com.javacha.demos.mlchallenge.model.Mutante;
+import java.util.Iterator;
+
+import com.javacha.demos.mlchallenge.mutante.BuscadorDiagAscendente;
+import com.javacha.demos.mlchallenge.mutante.BuscadorDiagDescendente;
+import com.javacha.demos.mlchallenge.mutante.BuscadorHorizontal;
+import com.javacha.demos.mlchallenge.mutante.BuscadorVertical;
+import com.javacha.demos.mlchallenge.mutante.IBuscadorMutante;
+import com.javacha.demos.mlchallenge.mutante.Mutante;
 
 public class MutantService {
 
-	
-	
-	int cantSeqMutante = 0;
-	
-	boolean mutantCheck(String[] dna) {
-		
-		if (dna.length < 4)
-			return false;
-		
-		
-		
-		
-		return false;
-		
-	}
-	
-	
+	int CANT_SECUENCIAS_MUTANTES = 2 ;
 	
 	
 
@@ -43,78 +34,46 @@ public class MutantService {
 		return true;
 	}		
 	
-
 	
-	/////////////  HORIZONTAL
-	int validaHorizontal(String[] dna) {
-		int cantMutantes=0;
-		for (int i = 0; i < dna.length ; i++) {
-			cantMutantes += Mutante.buscaSecuenciaMutante(getHorizontalChunk(dna, i));			
-		}
-		return cantMutantes;
-	}
-	String getHorizontalChunk(String[] dna, int row ) {
-		return dna[row];
-	}
 	
 
-	
-	/////////////  VERTICAL
-	int validaVertical(String[] dna) {
-		int cantMutantes=0;
-		for (int i = 0; i < dna.length ; i++) {
-			cantMutantes += Mutante.buscaSecuenciaMutante(getVerticalChunk(dna, i));			
-		}
-		return cantMutantes;
-	}		
-	String getVerticalChunk(String[] dna, int col ) {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < dna.length; i++) {
-			sb.append(dna[i].charAt(col));
-		}
-		return sb.toString();
-	}	
-	
-	
-	
-	/////////////  DIAGONAL DESCENDENTE
-	int validaDiagonalDesc(String[] dna) {
-		int cantSeqMutantes=0;
+	int buscaSecuenciasMutantes(String[] dna) {
+		int cantSecuenciasMutantes = 0 ;
 		
-		for (int x = dna.length - Mutante.getMutantSequenceLength(); x >= 0 ; x--) {
-			cantSeqMutantes += Mutante.buscaSecuenciaMutante(getDiagonalDescChunk(dna, 0, x));			
-		}
+		IBuscadorMutante[] buscadores = { new BuscadorHorizontal(),
+										  new BuscadorVertical(),
+										  new BuscadorDiagDescendente(),
+										  new BuscadorDiagAscendente() } ;
 		
-		for (int y = 1; y < dna.length ; y++) {				
-			cantSeqMutantes += Mutante.buscaSecuenciaMutante(getDiagonalDescChunk(dna, y, 0));
+		for (IBuscadorMutante buscadorMutante : buscadores) {
+			cantSecuenciasMutantes += buscadorMutante.buscarMutante(dna) ;
 		}
-		
-		return cantSeqMutantes;
-	}		
-	String getDiagonalDescChunk(String[] dna, int row, int col ) {
-		int v_row, v_col=0;
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; row+col+i < dna.length; i++) {
-			v_row=row+i;
-			v_col=col+i;
-			sb.append(dna[v_row].charAt(v_col));
-		}
-		return sb.toString();		
-	}	
+				
+		return cantSecuenciasMutantes;
+	}
 	
+
+	
+	public boolean isMutant(String[] dna) {
+		return validaDna(dna)  &&  buscaSecuenciasMutantes(dna) >= CANT_SECUENCIAS_MUTANTES ;
+	}
+
+	
+	
+		
 
 
 
 		
 	public static void main(String[] args) {
-		String[] dna = {  "GTCACCAGAG", "TGAAACTATC", "CTCTGAGGAA", "AGCGTGTCCA", "TGTGCTCAAC", "CTAGGACTTA", "AATAGGGGGG", "TAATGCAATA", "GGATTTAGAC", "TTCAATGGCC" };
+		String[] dna = {  "GTCACCAGAG", "TGAAACTATC", "CTCTGAGTAA", "AGCGTGTCCA", "TGTGCTCAAC", "CTAGGACTTA", "AAGGGGGGGG", "TAATGCAATA", "GGATTTAGAC", "TTCAATGGCG" };
 		
 		MutantService mut = new MutantService();
 		TimeTrack tt = new TimeTrack();
 	
-		//System.out.println(mut.validaHorizontal(dna ));
-		//System.out.println(mut.validaVertical(dna ));
-		System.out.println(mut.validaDiagonalDesc(dna));
+		
+		System.out.println(mut.isMutant(dna));
+		
 		
 		
 		//boolean valido = mut.validaDna(dna);	

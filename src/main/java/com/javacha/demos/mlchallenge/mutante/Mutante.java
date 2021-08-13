@@ -1,4 +1,4 @@
-package com.javacha.demos.mlchallenge.model;
+package com.javacha.demos.mlchallenge.mutante;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -7,19 +7,22 @@ import java.util.Set;
 public class Mutante {
 
 	
-
-	static int MUTANT_SEQUENCE_LENGTH = 4 ;
-	
+	static int MUTANT_SEQUENCE_LENGTH = 4 ;	
 	static Set<Character> baseValida = new HashSet<Character>(Arrays.asList('A', 'C', 'G', 'T'));
+	
+	
 	
 	
 	public static int getMutantSequenceLength() {
 		return MUTANT_SEQUENCE_LENGTH;
 	}
 	
+	
+	/*
 	public static Set<Character> getBaseNitrogenada() {
 		return baseValida;
 	}
+	*/
 	
 	
 	public static boolean baseNitrogenadaValida(char base) {
